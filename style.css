@@ -67,6 +67,22 @@ button[type="submit"] {
 button[type="submit"]:hover {
   background-color: #45a049;
 }
+#btn-google {
+  background-color: #DB4437;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  margin-top: 10px;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+#btn-google:hover {
+  background-color: #c13527;
+}
+
 
 /* Botões Sim/Não */
 #btn-sim {
@@ -113,6 +129,34 @@ button[type="submit"]:hover {
 #lista-compras p:nth-child(even) {
   background-color: #333;
 }
+#lista-compras p {
+  display: flex;
+  justify-content: space-between; /* texto à esquerda, botão à direita */
+  align-items: center;
+  padding: 12px 15px;
+  border-bottom: 1px solid #555;
+  font-size: 1rem;
+  background-color: #2c2c2c;
+  color: #e0e0e0;
+}
+
+#lista-compras p:nth-child(even) {
+  background-color: #333;
+}
+
+#lista-compras p button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #e0e0e0;
+  transition: color 0.2s;
+}
+
+#lista-compras p button:hover {
+  color: #f44336;
+}
+
 
 /* ====== RESPONSIVO ====== */
 @media (max-width: 600px) {

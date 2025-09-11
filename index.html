@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mercado Inteligente</title>
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
 </head>
 <body>
   <div class="container">
@@ -20,8 +25,11 @@
     <form id="form-login" style="display:none; flex-direction:column; gap:10px;">
       <input type="email" id="email" placeholder="Email" required />
       <input type="password" id="senha" placeholder="Senha" required />
-      <button type="submit">Entrar / Registrar</button>
+      <!-- Botão Login com Google -->
+      <button type="button" id="btn-google">Login com Google</button>
+      <button type="submit">Entrar / Criar Conta</button>
       <button type="button" id="btn-voltar">Voltar</button>
+
     </form>
 
     <!-- Formulário de itens -->
@@ -59,7 +67,6 @@
       </select>
 
       <button type="submit">Adicionar</button>
-      <!-- Botão para login mesmo no modo visitante -->
       <button type="button" id="btn-login-visitante" style="margin-top:10px; background-color:#2196F3; color:#fff;">Login / Registrar</button>
     </form>
 
@@ -72,9 +79,37 @@
         Limpar Lista
       </button>
     </div>
-
   </div>
 
+  <!-- Script principal -->
   <script src="script.js"></script>
+
+  <!-- Firebase Config (substitua com suas credenciais do projeto) -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY",
+      authDomain: "SEU_AUTH_DOMAIN",
+      projectId: "SEU_PROJECT_ID",
+      storageBucket: "SEU_STORAGE_BUCKET",
+      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+      appId: "SEU_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // Login com Google
+    document.getElementById('btn-google').addEventListener('click', async () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      try {
+        const result = await firebase.auth().signInWithPopup(provider);
+        const token = await result.user.getIdToken();
+        localStorage.setItem('token', token);
+        alert('Login com Google realizado com sucesso!');
+        document.getElementById('form-login').style.display = 'none';
+        document.getElementById('form-item').style.display = 'flex';
+      } catch(err) {
+        alert(err.message);
+      }
+    });
+  </script>
 </body>
 </html>
