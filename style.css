@@ -102,7 +102,7 @@ button[type="submit"]:hover {
 
 /* Botões de login/visitante */
 #btn-login, #btn-visitante, #btn-login-visitante, #btn-voltar {
-  background-color: #ff0000;
+  background-color: #107bd37c;
   color: #fff;
 }
 #btn-login:hover, #btn-visitante:hover, #btn-login-visitante:hover, #btn-voltar:hover {
