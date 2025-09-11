@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mercado Inteligente</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🛒 Mercado Inteligente</h1>
+
+    <!-- Escolha do modo -->
+    <div id="modo-acesso" style="margin-bottom:20px; text-align:center;">
+      <button id="btn-login" style="margin-right:10px;">Login / Registrar</button>
+      <button id="btn-visitante">Continuar como visitante</button>
+    </div>
+
+    <!-- Formulário de login/registro -->
+    <form id="form-login" style="display:none; flex-direction:column; gap:10px;">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="senha" placeholder="Senha" required />
+      <button type="submit">Entrar / Registrar</button>
+      <button type="button" id="btn-voltar">Voltar</button>
+    </form>
+
+    <!-- Formulário de itens -->
+    <form id="form-item" style="display:none; flex-direction:column; gap:12px;">
+      <input type="text" id="nome" placeholder="Nome do item" required />
+
+      <div id="categoria-sugerida" style="display:none; margin-top:10px;">
+        <span>Categoria sugerida: <strong id="cat-sugerida-text"></strong></span>
+        <button type="button" id="btn-sim">Sim</button>
+        <button type="button" id="btn-nao">Não</button>
+      </div>
+
+      <select id="categoria" style="display:none;" required>
+        <option value="">Selecione a categoria</option>
+        <option value="Frutas">Frutas</option>
+        <option value="Verduras e Legumes">Verduras e Legumes</option>
+        <option value="Carnes e Açougue">Carnes e Açougue</option>
+        <option value="Padaria e Confeitaria">Padaria e Confeitaria</option>
+        <option value="Laticínios">Laticínios</option>
+        <option value="Bebidas">Bebidas</option>
+        <option value="Mercearia">Mercearia</option>
+        <option value="Congelados">Congelados</option>
+        <option value="Limpeza">Limpeza</option>
+        <option value="Higiene Pessoal">Higiene Pessoal</option>
+        <option value="Utensílios Domésticos">Utensílios Domésticos</option>
+        <option value="Temperos e Condimentos">Temperos e Condimentos</option>
+        <option value="Enlatados e Conservas">Enlatados e Conservas</option>
+        <option value="Cereais e Matinais">Cereais e Matinais</option>
+        <option value="Biscoitos e Snacks">Biscoitos e Snacks</option>
+        <option value="Doces e Sobremesas">Doces e Sobremesas</option>
+        <option value="Pet Shop">Pet Shop</option>
+        <option value="Bebê">Bebê</option>
+        <option value="Beleza e Cosméticos">Beleza e Cosméticos</option>
+        <option value="Bazar">Bazar</option>
+      </select>
+
+      <button type="submit">Adicionar</button>
+      <!-- Botão para login mesmo no modo visitante -->
+      <button type="button" id="btn-login-visitante" style="margin-top:10px; background-color:#2196F3; color:#fff;">Login / Registrar</button>
+    </form>
+
+    <div id="lista-compras" style="margin-top:20px;"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

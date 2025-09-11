@@ -1,0 +1,155 @@
+/* ====== RESET E BASE ====== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #121212; /* fundo escuro */
+  color: #e0e0e0; /* texto claro */
+}
+
+.container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 20px 25px;
+  background-color: #1e1e1e; /* contraste para o container */
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+  color: #ffffff;
+}
+
+/* ====== FORM ====== */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+input[type="text"], input[type="email"], input[type="password"], select {
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background-color: #2c2c2c;
+  color: #e0e0e0;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+input:focus, select:focus {
+  border-color: #4CAF50;
+  outline: none;
+  background-color: #333;
+}
+
+button[type="submit"], #btn-sim, #btn-nao, #btn-login, #btn-visitante, #btn-login-visitante, #btn-voltar {
+  padding: 10px 15px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* Botão principal */
+button[type="submit"] {
+  background-color: #4CAF50;
+  color: #fff;
+}
+button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+/* Botões Sim/Não */
+#btn-sim {
+  background-color: #2196F3;
+  color: #fff;
+}
+#btn-sim:hover {
+  background-color: #1976D2;
+}
+#btn-nao {
+  background-color: #f44336;
+  color: #fff;
+}
+#btn-nao:hover {
+  background-color: #d32f2f;
+}
+
+/* Botões de login/visitante */
+#btn-login, #btn-visitante, #btn-login-visitante, #btn-voltar {
+  background-color: #2196F3;
+  color: #fff;
+}
+#btn-login:hover, #btn-visitante:hover, #btn-login-visitante:hover, #btn-voltar:hover {
+  background-color: #1976D2;
+}
+
+/* ====== LISTA DE COMPRAS ====== */
+#lista-compras {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #555;
+}
+
+#lista-compras p {
+  padding: 12px 15px;
+  border-bottom: 1px solid #555;
+  font-size: 1rem;
+  background-color: #2c2c2c;
+  color: #e0e0e0;
+}
+
+/* Alternando cores (zebra) */
+#lista-compras p:nth-child(even) {
+  background-color: #333;
+}
+
+/* ====== RESPONSIVO ====== */
+@media (max-width: 600px) {
+  /* container e h1 continuam iguais */
+  
+  /* Ajuste geral dos botões */
+  button[type="submit"],
+  #btn-sim, #btn-nao,
+  #btn-login, #btn-visitante,
+  #btn-login-visitante, #btn-voltar {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+
+  /* Botões de escolha de modo lado a lado */
+  #modo-acesso {
+    display: flex;
+    flex-direction: row; /* lado a lado */
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap; /* permite quebra se não couber */
+  }
+
+  #modo-acesso button {
+    width: auto; /* não força 100% */
+    min-width: 140px; /* largura mínima aceitável */
+    flex: none; /* remove flex:1 que fazia ocupar toda a largura */
+  }
+
+  /* Opcional: empilha em telas muito pequenas */
+  @media (max-width: 400px) {
+    #modo-acesso {
+      flex-direction: column;
+      gap: 20px;
+    }
+    #modo-acesso button {
+      width: 100%;
+    }
+  }
+}
