@@ -6,6 +6,7 @@ const catSugeridaText = document.getElementById("cat-sugerida-text");
 const btnSim = document.getElementById("btn-sim");
 const btnNao = document.getElementById("btn-nao");
 const lista = document.getElementById("lista-compras");
+const btnLimpar = document.getElementById("btn-limpar");
 
 const btnVisitante = document.getElementById('btn-visitante');
 const btnLogin = document.getElementById('btn-login');
@@ -76,7 +77,7 @@ btnNao.addEventListener("click", () => {
 btnVisitante.addEventListener('click', () => {
   modoAcesso.style.display = 'none';
   formItem.style.display = 'flex';
-  carregarItens(); // lista itens do visitante
+  carregarItens();
 });
 
 btnLogin.addEventListener('click', () => {
@@ -122,6 +123,28 @@ formLogin.addEventListener('submit', async (e) => {
   }
 });
 
+// ---------------- Função para criar item com X ----------------
+function criarItemElemento(nome, categoria) {
+  const p = document.createElement("p");
+  p.textContent = `${nome} - ${categoria} `;
+  
+  const x = document.createElement("button");
+  x.textContent = "❌";
+  x.style.marginLeft = "10px";
+  x.style.cursor = "pointer";
+  x.style.background = "transparent";
+  x.style.border = "none";
+  
+  x.addEventListener("click", () => {
+    lista.removeChild(p);
+    salvarItensVisitante();
+    atualizarBotaoLimpar();
+  });
+
+  p.appendChild(x);
+  return p;
+}
+
 // ---------------- Adicionar item ----------------
 async function adicionarItem() {
   const nome = nomeInput.value.trim();
@@ -131,7 +154,7 @@ async function adicionarItem() {
   if (!nome) { alert("Digite o nome do item!"); return; }
 
   if (token) {
-    // -------- Usuário logado: backend ----------
+    // Usuário logado: backend
     try {
       const res = await fetch('http://localhost:3000/api/itens', {
         method: 'POST',
@@ -144,22 +167,17 @@ async function adicionarItem() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      const item = document.createElement("p");
-      item.textContent = `${data.item.nome} - ${data.item.categoria}`;
+      const item = criarItemElemento(data.item.nome, data.item.categoria);
       lista.appendChild(item);
 
     } catch(err) {
       alert(err.message);
     }
   } else {
-    // -------- Modo visitante: salvar localmente ----------
-    const item = document.createElement("p");
-    item.textContent = `${nome} - ${categoria}`;
+    // Visitante
+    const item = criarItemElemento(nome, categoria);
     lista.appendChild(item);
-
-    const visitItems = JSON.parse(localStorage.getItem('visitante-itens') || "[]");
-    visitItems.push({ nome, categoria });
-    localStorage.setItem('visitante-itens', JSON.stringify(visitItems));
+    salvarItensVisitante();
   }
 
   // Reset do form
@@ -168,6 +186,8 @@ async function adicionarItem() {
   categoriaSelect.value = "";
   categoriaSugerida.style.display = "none";
   catSugeridaText.textContent = "";
+
+  atualizarBotaoLimpar();
 }
 
 form.addEventListener("submit", (e) => {
@@ -182,35 +202,56 @@ nomeInput.addEventListener("keydown", (e) => {
   }
 });
 
+// ---------------- Salvar itens visitante ----------------
+function salvarItensVisitante() {
+  const visitItems = [];
+  lista.querySelectorAll("p").forEach(p => {
+    const texto = p.textContent.replace(" ❌", "");
+    const [nome, categoria] = texto.split(" - ");
+    visitItems.push({ nome, categoria });
+  });
+  localStorage.setItem('visitante-itens', JSON.stringify(visitItems));
+}
+
 // ---------------- Carregar itens ----------------
 async function carregarItens() {
   lista.innerHTML = '';
   const token = localStorage.getItem('token');
 
   if (token) {
-    // Logado: fetch backend
     try {
       const res = await fetch('http://localhost:3000/api/itens', {
         headers: { 'Authorization': token }
       });
       const itens = await res.json();
       itens.forEach(i => {
-        const p = document.createElement("p");
-        p.textContent = `${i.nome} - ${i.categoria}`;
+        const p = criarItemElemento(i.nome, i.categoria);
         lista.appendChild(p);
       });
     } catch(err) {
       console.log('Erro ao carregar itens', err);
     }
   } else {
-    // Visitante: carregar do localStorage
     const visitItems = JSON.parse(localStorage.getItem('visitante-itens') || "[]");
     visitItems.forEach(i => {
-      const p = document.createElement("p");
-      p.textContent = `${i.nome} - ${i.categoria}`;
+      const p = criarItemElemento(i.nome, i.categoria);
       lista.appendChild(p);
     });
   }
+
+  atualizarBotaoLimpar();
+}
+
+// ---------------- Botão Limpar ----------------
+btnLimpar.addEventListener("click", () => {
+  lista.innerHTML = '';
+  localStorage.removeItem('visitante-itens');
+  atualizarBotaoLimpar();
+});
+
+// ---------------- Mostrar ou esconder botão Limpar ----------------
+function atualizarBotaoLimpar() {
+  btnLimpar.style.display = lista.children.length > 0 ? "inline-block" : "none";
 }
 
 // ---------------- Auto carregar itens se já logado ou visitante ----------
