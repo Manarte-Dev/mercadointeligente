@@ -126,7 +126,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===== ADICIONAR ITEM =====
   async function adicionarItem() {
     const nome = nomeInput.value.trim();
-    const categoria = categoriaSelect.value || catSugeridaText.textContent;
+    let categoria = categoriaSelect.value;
+    if (!categoria) {
+      categoria = catSugeridaText.textContent || "";
+    }
     const token = localStorage.getItem('token');
 
     if (!nome) { alert("Digite o nome do item!"); return; }
@@ -253,7 +256,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ===== LOGIN COM GOOGLE (FIREBASE) =====
   function mostrarBotaoGoogle() {
-    // Cria botão do Google dinamicamente se não existir
     if (!document.getElementById('btn-google')) {
       const btnGoogle = document.createElement('button');
       btnGoogle.textContent = "Login com Google";
@@ -266,7 +268,6 @@ document.addEventListener("DOMContentLoaded", () => {
       btnGoogle.style.marginTop = "10px";
 
       btnGoogle.addEventListener('click', async () => {
-        // FIREBASE LOGIN
         const provider = new firebase.auth.GoogleAuthProvider();
         try {
           const result = await firebase.auth().signInWithPopup(provider);

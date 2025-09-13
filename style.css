@@ -7,15 +7,15 @@
 }
 
 body {
-  background-color: #121212; /* fundo escuro */
-  color: #e0e0e0; /* texto claro */
+  background-color: #121212; 
+  color: #e0e0e0; 
 }
 
 .container {
   max-width: 500px;
   margin: 40px auto;
   padding: 20px 25px;
-  background-color: #1e1e1e; /* contraste para o container */
+  background-color: #1e1e1e; 
   border-radius: 10px;
   box-shadow: 0 6px 15px rgba(0,0,0,0.5);
 }
@@ -61,7 +61,7 @@ button[type="submit"], #btn-sim, #btn-nao, #btn-login, #btn-visitante, #btn-logi
 
 /* Botão principal */
 button[type="submit"] {
-  background-color: #4CAF50;
+  background-color: #4caf4f;
   color: #fff;
 }
 button[type="submit"]:hover {
