@@ -43,7 +43,26 @@ document.addEventListener("DOMContentLoaded", () => {
     "Bazar": ["vela","pilha","lâmpada","isqueiro","fósforo","cabide","extensão elétrica","carvão"]
   };
 
-  // ===== SUGESTÃO =====
+  // ===== FUNÇÕES AUXILIARES =====
+  function criarItemElemento(nome, categoria) {
+    const p = document.createElement("p");
+    p.textContent = `${nome} - ${categoria}`;
+    const btn = document.createElement("button");
+    btn.textContent = "❌";
+    btn.style.marginLeft = "10px";
+    btn.style.cursor = "pointer";
+    btn.style.background = "transparent";
+    btn.style.border = "none";
+    btn.onclick = () => { lista.removeChild(p); salvarItensVisitante(); atualizarBotaoLimpar(); };
+    p.appendChild(btn);
+    return p;
+  }
+
+  function atualizarBotaoLimpar() {
+    btnLimpar.style.display = lista.children.length > 0 ? "inline-block" : "none";
+  }
+
+  // ===== SUGESTÃO DE CATEGORIA =====
   function sugerirCategoria(nome) {
     nome = nome.toLowerCase().trim();
     for (let cat in catalogo) {
@@ -76,108 +95,39 @@ document.addEventListener("DOMContentLoaded", () => {
     categoriaSelect.style.display = "block";
   });
 
-  // ===== CONTROLE DE TELAS =====
-  btnVisitante.addEventListener('click', () => {
-    modoAcesso.style.display = 'none';
-    formItem.style.display = 'flex';
-    carregarItens();
-  });
-
-  btnLogin.addEventListener('click', () => {
-    modoAcesso.style.display = 'none';
-    formLogin.style.display = 'flex';
-    formItem.style.display = 'none';
-    mostrarBotaoGoogle(); // mostrar botão login Google
-  });
-
-  btnLoginVisitante.addEventListener('click', () => {
-    formItem.style.display = 'none';
-    formLogin.style.display = 'flex';
-    mostrarBotaoGoogle();
-  });
-
-  btnVoltar.addEventListener('click', () => {
-    formLogin.style.display = 'none';
-    modoAcesso.style.display = 'block';
-  });
-
-  // ===== CRIAR ITEM =====
-  function criarItemElemento(nome, categoria) {
-    const p = document.createElement("p");
-    p.textContent = `${nome} - ${categoria} `;
-    
-    const x = document.createElement("button");
-    x.textContent = "❌";
-    x.style.marginLeft = "10px";
-    x.style.cursor = "pointer";
-    x.style.background = "transparent";
-    x.style.border = "none";
-    
-    x.addEventListener("click", () => {
-      lista.removeChild(p);
-      salvarItensVisitante();
-      atualizarBotaoLimpar();
-    });
-
-    p.appendChild(x);
-    return p;
-  }
-
   // ===== ADICIONAR ITEM =====
   async function adicionarItem() {
     const nome = nomeInput.value.trim();
-    let categoria = categoriaSelect.value;
-    if (!categoria) {
-      categoria = catSugeridaText.textContent || "";
-    }
-    const token = localStorage.getItem('token');
+    let categoria = categoriaSelect.value || catSugeridaText.textContent || "Sem categoria";
 
     if (!nome) { alert("Digite o nome do item!"); return; }
 
+    const token = localStorage.getItem('token');
     if (token) {
       try {
         const res = await fetch('http://localhost:3000/api/itens', {
           method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': token
-          },
+          headers: { 'Content-Type': 'application/json', 'Authorization': token },
           body: JSON.stringify({ nome, categoria })
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error);
-
-        const item = criarItemElemento(data.item.nome, data.item.categoria);
-        lista.appendChild(item);
-
-      } catch(err) {
-        alert(err.message);
-      }
+        lista.appendChild(criarItemElemento(data.item.nome, data.item.categoria));
+      } catch(err) { alert(err.message); }
     } else {
-      const item = criarItemElemento(nome, categoria);
-      lista.appendChild(item);
+      lista.appendChild(criarItemElemento(nome, categoria));
       salvarItensVisitante();
     }
 
     form.reset();
     categoriaSelect.style.display = "none";
-    categoriaSelect.value = "";
     categoriaSugerida.style.display = "none";
     catSugeridaText.textContent = "";
     atualizarBotaoLimpar();
   }
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    adicionarItem();
-  });
-
-  nomeInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      adicionarItem();
-    }
-  });
+  form.addEventListener("submit", e => { e.preventDefault(); adicionarItem(); });
+  nomeInput.addEventListener("keydown", e => { if(e.key==="Enter"){ e.preventDefault(); adicionarItem(); } });
 
   // ===== VISITANTE =====
   function salvarItensVisitante() {
@@ -196,45 +146,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (token) {
       try {
-        const res = await fetch('http://localhost:3000/api/itens', {
-          headers: { 'Authorization': token }
-        });
+        const res = await fetch('http://localhost:3000/api/itens', { headers: { 'Authorization': token } });
         const itens = await res.json();
-        itens.forEach(i => {
-          const p = criarItemElemento(i.nome, i.categoria);
-          lista.appendChild(p);
-        });
-      } catch(err) {
-        console.log('Erro ao carregar itens', err);
-      }
+        itens.forEach(i => lista.appendChild(criarItemElemento(i.nome, i.categoria)));
+      } catch(err) { console.log('Erro ao carregar itens', err); }
     } else {
       const visitItems = JSON.parse(localStorage.getItem('visitante-itens') || "[]");
-      visitItems.forEach(i => {
-        const p = criarItemElemento(i.nome, i.categoria);
-        lista.appendChild(p);
-      });
+      visitItems.forEach(i => lista.appendChild(criarItemElemento(i.nome, i.categoria)));
     }
 
     atualizarBotaoLimpar();
   }
 
-  // ===== BOTÃO LIMPAR =====
   btnLimpar.addEventListener("click", () => {
     lista.innerHTML = '';
     localStorage.removeItem('visitante-itens');
     atualizarBotaoLimpar();
   });
 
-  function atualizarBotaoLimpar() {
-    btnLimpar.style.display = lista.children.length > 0 ? "inline-block" : "none";
-  }
+  // ===== CONTROLE DE TELAS =====
+  btnVisitante.addEventListener('click', () => { modoAcesso.style.display='none'; formItem.style.display='flex'; carregarItens(); });
+  btnLogin.addEventListener('click', () => { modoAcesso.style.display='none'; formLogin.style.display='flex'; formItem.style.display='none'; mostrarBotaoGoogle(); });
+  btnLoginVisitante.addEventListener('click', () => { formItem.style.display='none'; formLogin.style.display='flex'; mostrarBotaoGoogle(); });
+  btnVoltar.addEventListener('click', () => { formLogin.style.display='none'; modoAcesso.style.display='block'; });
 
   // ===== LOGIN TRADICIONAL =====
-  formLogin.addEventListener('submit', async (e) => {
+  formLogin.addEventListener('submit', async e => {
     e.preventDefault();
     const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
-
     try {
       const res = await fetch('http://localhost:3000/api/login', {
         method: 'POST',
@@ -243,50 +183,32 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-
       localStorage.setItem('token', data.token);
       alert('Login/Registro realizado com sucesso!');
       formLogin.style.display = 'none';
       formItem.style.display = 'flex';
       carregarItens();
-    } catch(err) {
-      alert(err.message);
-    }
+    } catch(err) { alert(err.message); }
   });
 
-  // ===== LOGIN COM GOOGLE (FIREBASE) =====
+  // ===== LOGIN GOOGLE =====
   function mostrarBotaoGoogle() {
-    if (!document.getElementById('btn-google')) {
-      const btnGoogle = document.createElement('button');
-      btnGoogle.textContent = "Login com Google";
-      btnGoogle.id = "btn-google";
-      btnGoogle.style.backgroundColor = "#DB4437";
-      btnGoogle.style.color = "#fff";
-      btnGoogle.style.border = "none";
-      btnGoogle.style.padding = "10px 15px";
-      btnGoogle.style.cursor = "pointer";
-      btnGoogle.style.marginTop = "10px";
-
-      btnGoogle.addEventListener('click', async () => {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        try {
-          const result = await firebase.auth().signInWithPopup(provider);
-          const token = await result.user.getIdToken();
-          localStorage.setItem('token', token);
-          alert('Login com Google realizado com sucesso!');
-          formLogin.style.display = 'none';
-          formItem.style.display = 'flex';
-          carregarItens();
-        } catch(err) {
-          alert(err.message);
-        }
-      });
-
-      formLogin.appendChild(btnGoogle);
-    }
+    if (!document.getElementById('btn-google')) return;
+    document.getElementById('btn-google').onclick = async () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      try {
+        const result = await firebase.auth().signInWithPopup(provider);
+        const token = await result.user.getIdToken();
+        localStorage.setItem('token', token);
+        alert('Login com Google realizado com sucesso!');
+        formLogin.style.display='none';
+        formItem.style.display='flex';
+        carregarItens();
+      } catch(err) { alert(err.message); }
+    };
   }
 
-  // ===== AUTO CARREGAR =====
+  // ===== AUTO-CARREGAR ITENS =====
   if (localStorage.getItem('token') || JSON.parse(localStorage.getItem('visitante-itens') || "[]").length) {
     modoAcesso.style.display = 'none';
     formItem.style.display = 'flex';

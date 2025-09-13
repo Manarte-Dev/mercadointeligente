@@ -9,7 +9,6 @@
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
 </head>
 <body>
   <div class="container">
@@ -29,7 +28,6 @@
       <button type="button" id="btn-google">Login com Google</button>
       <button type="submit">Entrar / Criar Conta</button>
       <button type="button" id="btn-voltar">Voltar</button>
-
     </form>
 
     <!-- Formulário de itens -->
@@ -42,7 +40,7 @@
         <button type="button" id="btn-nao">Não</button>
       </div>
 
-      <select id="categoria" style="display:none;" required>
+      <select id="categoria" style="display:none;">
         <option value="">Selecione a categoria</option>
         <option value="Frutas">Frutas</option>
         <option value="Verduras e Legumes">Verduras e Legumes</option>
@@ -95,21 +93,6 @@
       appId: "SEU_APP_ID"
     };
     firebase.initializeApp(firebaseConfig);
-
-    // Login com Google
-    document.getElementById('btn-google').addEventListener('click', async () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      try {
-        const result = await firebase.auth().signInWithPopup(provider);
-        const token = await result.user.getIdToken();
-        localStorage.setItem('token', token);
-        alert('Login com Google realizado com sucesso!');
-        document.getElementById('form-login').style.display = 'none';
-        document.getElementById('form-item').style.display = 'flex';
-      } catch(err) {
-        alert(err.message);
-      }
-    });
   </script>
 </body>
 </html>
